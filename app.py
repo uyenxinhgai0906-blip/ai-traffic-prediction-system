@@ -50,10 +50,8 @@ def home():
 
         vehicle_history = [0]
 
-    # Keep last 10 values
     vehicle_history = vehicle_history[-10:]
 
-    # Labels
     labels = list(range(1, len(vehicle_history) + 1))
 
     # =========================
@@ -78,18 +76,33 @@ def home():
 
     <head>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Traffic Intelligence System</title>
 
     <meta http-equiv="refresh" content="2">
+
+    <!-- Leaflet -->
 
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet/dist/leaflet.css"
     />
 
+    <!-- Bootstrap -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Leaflet JS -->
+
     <script
         src="https://unpkg.com/leaflet/dist/leaflet.js">
     </script>
+
+    <!-- Chart JS -->
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -104,30 +117,41 @@ def home():
 
     h1{{
         color:#00ffcc;
+        font-weight:bold;
+    }}
+
+    h2{{
+        margin-top:10px;
+        margin-bottom:20px;
     }}
 
     .dashboard{{
-        display:flex;
+        display:grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap:20px;
         margin-top:20px;
-        flex-wrap:wrap;
     }}
 
     .card{{
         background:#1f2937;
         padding:20px;
-        border-radius:15px;
-        width:220px;
+        border-radius:20px;
         box-shadow:0 0 15px rgba(0,0,0,0.5);
+        transition:0.3s;
+    }}
+
+    .card:hover{{
+        transform:scale(1.03);
     }}
 
     .big{{
-        font-size:32px;
+        font-size:42px;
         font-weight:bold;
+        margin-top:10px;
     }}
 
     #map{{
-        height:500px;
+        height:70vh;
         margin-top:30px;
         border-radius:20px;
         overflow:hidden;
@@ -140,36 +164,75 @@ def home():
         border-radius:20px;
     }}
 
+    canvas{{
+        background:#111827;
+        border-radius:10px;
+        padding:10px;
+    }}
+
+    @media(max-width:768px){{
+
+        h1{{
+            font-size:32px;
+        }}
+
+        .big{{
+            font-size:32px;
+        }}
+
+        #map{{
+            height:60vh;
+        }}
+    }}
+
     </style>
 
     </head>
 
-    <body>
+    <body class="container-fluid">
 
-    <h1>🚦 Traffic Intelligence System</h1>
+    <div class="mt-3 mb-4">
 
-    <h2>Realtime AI Prediction Dashboard</h2>
+        <h1>🚦 Traffic Intelligence System</h1>
+
+        <h2>Realtime AI Smart Traffic Monitoring</h2>
+
+    </div>
+
+    <!-- DASHBOARD -->
 
     <div class="dashboard">
 
         <div class="card">
-            <h3>Vehicles</h3>
+
+            <h3>🚗 Vehicles</h3>
+
             <div class="big">{vehicles}</div>
+
         </div>
 
         <div class="card">
-            <h3>Traffic</h3>
+
+            <h3>🚦 Traffic</h3>
+
             <div class="big">{traffic}</div>
+
         </div>
 
         <div class="card">
-            <h3>Speed</h3>
+
+            <h3>⚡ Speed</h3>
+
             <div class="big">{speed}</div>
+
         </div>
 
         <div class="card">
-            <h3>Prediction</h3>
+
+            <h3>🧠 Prediction</h3>
+
             <div class="big">{prediction}</div>
+
         </div>
 
     </div>
@@ -182,7 +245,7 @@ def home():
 
     <div id="chart-container">
 
-        <h2>Realtime Traffic Analytics</h2>
+        <h2>📈 Realtime Traffic Analytics</h2>
 
         <canvas id="trafficChart"></canvas>
 
@@ -203,7 +266,8 @@ def home():
         }}
     ).addTo(map);
 
-    // Main zone
+    // MAIN ZONE
+
     var circle = L.circle(
         [10.7769, 106.7009],
         {{
@@ -218,7 +282,8 @@ def home():
         "<b>Traffic:</b> {traffic}<br><b>Prediction:</b> {prediction}"
     );
 
-    // Extra zones
+    // EXTRA ZONES
+
     L.circle(
         [10.7820, 106.6800],
         {{
